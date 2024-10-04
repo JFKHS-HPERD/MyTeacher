@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Schedule with IEP Logging</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            overflow-y: auto;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1, h2 {
+            text-align: center;
+            font-size: 1.5em;
+            margin: 20px 0;
+        }
+        label {
+            margin-top: 10px;
+            font-size: 1em;
+        }
+        select, textarea, button {
+            width: 100%;
+            font-size: 1em;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        textarea {
+            height: 100px;
+            resize: none;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            margin-top: 15px;
+            border: none;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #image-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+            width: 100%;
+        }
+        img {
+            width: 100%;
+            height: auto;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        .full-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: contain;
+            background-color: white;
+            z-index: 1000;
+        }
+        #retry {
+            display: none;
+        }
+        #reset-button, #export-log, #save-session, #clear-log {
+            width: 100%;
+        }
+        #session-log {
+            margin-top: 20px;
+            width: 100%;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #fff;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .session-entry {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Hi Inara!
+    <br>  "What is your teacher's name?" and "Who is your next teacher?"</h1>
+
+	<!-- Question Selection Dropdown -->
+        <label for="question-select">(Teacher) Select Question:</label>
+        <select id="question-select">
+            <option value="current">What is your teacher's name?</option>
+            <option value="next">Who is your next teacher?</option>
+        </select>    
+	    
+        <label for="activity-select">(Teacher) Choose the correct class:</label>
+        <select id="activity-select">
+        <option value="salas">Salas</option>
+		<option value="batelle">Batelle</option>
+		<option value="theisen">Theisen</option>
+		<option value="monforte">Monforte</option>
+		<option value="tenorio">Tenorio</option>
+		<option value="quitoriano">Quitoriano</option>
+		<option value="bus">Bus</option>
+		
+    </select>
+
+        <label for="goal-select">(Teacher) Select Annual Goal:</label>
+        <select id="goal-select">
+            <option value="goal1">Annual Goal #1</option>
+            <option value="goal2">Annual Goal #2</option>
+        </select>
+
+        <label for="independence-select">(Teacher) Did the student act independently?</label>
+        <select id="independence-select">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+
+        <label for="comments">Teacher Comments:</label>
+        <textarea id="comments" placeholder="Add any notes or comments..."></textarea>
+
+        <button id="save-session" onclick="saveSession()">Save Session</button>
+
+        <div id="image-container">
+        <img src="salas.png" alt="Salas" id="salas">
+		<img src="batelle.png" alt="Batelle" id="batelle">
+		<img src="theisen.png" alt="Theisen" id="theisen">
+		<img src="monforte.png" alt="Monforte" id="monforte">
+		<img src="tenorio.png" alt="Tenorio" id="tenorio">
+		<img src="quitoriano.png" alt="Quitoriano" id="quitoriano">
+		<img src="bus.png" alt="Bus" id="bus">
+    </div>
+
+	<!-- Audio Elements for "I am in [subject]" -->
+        <audio id="in_salas" src="in_salas.mp3"></audio>
+        <audio id="in_batelle" src="in_batelle.mp3"></audio>
+        <audio id="in_theisen" src="in_theisen.mp3"></audio>
+        <audio id="in_monforte" src="in_monforte.mp3"></audio>
+        <audio id="in_tenorio" src="in_tenorio.mp3"></audio>
+        <audio id="in_quitoriano" src="in_quitoriano.mp3"></audio>
+        <audio id="in_bus" src="in_bus.mp3"></audio>
+
+        <!-- Audio Elements for "My next class is [subject]" -->
+        <audio id="next_salas" src="next_salas.mp3"></audio>
+        <audio id="next_batelle" src="next_batelle.mp3"></audio>
+        <audio id="next_theisen" src="next_theisen.mp3"></audio>
+        <audio id="next_monforte" src="next_monforte.mp3"></audio>
+        <audio id="next_tenorio" src="next_tenorio.mp3"></audio>
+        <audio id="next_quitoriano" src="next_quitoriano.mp3"></audio>
+        <audio id="next_bus" src="next_bus.mp3"></audio>
+
+        <!-- Audio Elements for "Try again" -->
+        <audio id="retry" src="retry.mp3"></audio>
+	    
+        <div id="session-log">
+            <h2>Session Log</h2>
+            <div id="log-entries"></div>
+        </div>
+
+        <img id="retry" src="retry.png" alt="Try Again" class="full-screen">
+
+        <button id="reset-button" onclick="resetApp()" style="display:none;">Try Again</button>
+        <button id="export-log" onclick="exportLog()">Export All Sessions</button>
+        <button id="clear-log" onclick="clearLog()">Clear Log</button>
+    </div>
+
+    <script>
+        const images = document.querySelectorAll('#image-container img');
+        const retryImg = document.getElementById('retry');
+        const resetButton = document.getElementById('reset-button');
+        const correctActivity = document.getElementById('activity-select');
+        const questionSelect = document.getElementById('question-select');
+        const goalSelect = document.getElementById('goal-select');
+        const independenceSelect = document.getElementById('independence-select');
+        const commentsField = document.getElementById('comments');
+        const logEntries = document.getElementById('log-entries');
+        const log = [];
+        let fullScreenImage = null;
+        const audioElements = {
+            salas: {
+                current: document.getElementById('in_salas'),
+                next: document.getElementById('next_salas')
+            },
+            batelle: {
+                current: document.getElementById('in_batelle'),
+                next: document.getElementById('next_batelle')
+            },
+            theisen: {
+                current: document.getElementById('in_theisen'),
+                next: document.getElementById('next_theisen')
+            },
+            monforte: {
+                current: document.getElementById('in_monforte'),
+                next: document.getElementById('next_monforte')
+            },
+            tenorio: {
+                current: document.getElementById('in_tenorio'),
+                next: document.getElementById('next_tenorio')
+            },
+            quitoriano: {
+                current: document.getElementById('in_quitoriano'),
+                next: document.getElementById('next_quitoriano')
+            },
+            bus: {
+                current: document.getElementById('in_bus'),
+                next: document.getElementById('next_bus')
+            },
+            tryAgain: document.getElementById('retry')
+        };
+
+        images.forEach(image => {
+            image.addEventListener('click', function() {
+                checkSelection(this.id);
+            });
+        });
+
+                function checkSelection(selectedId) {
+            const correctId = correctActivity.value;
+            const selectedQuestion = questionSelect.value;
+            const independence = independenceSelect.value;
+            const goal = goalSelect.value;
+            const comments = commentsField.value.trim();
+            
+            const logEntry = {
+                time: new Date().toLocaleString(),
+                selectedActivity: selectedId,
+                correctActivity: correctId,
+                independence: independence,
+                goal: goal,
+                comments: comments,
+                result: selectedId === correctId ? 'Correct' : 'Incorrect'
+            };
+
+            log.push(logEntry);
+
+            if (selectedId === correctId) {
+                playAudio(selectedId, selectedQuestion); // Play the correct audio
+                expandImage(document.getElementById(selectedId));
+            } else {
+                playAudio('tryAgain'); // Play "Try again" audio
+                showRetryScreen();
+            }
+        }
+
+
+        function playAudio(activity, questionType) {
+            // Pause all audio elements before playing the correct one
+            Object.values(audioElements).forEach(item => {
+                Object.values(item).forEach(audio => audio.pause());
+            });
+
+            if (activity === 'tryAgain') {
+                audioElements.tryAgain.play();
+            } else {
+                // Play the correct audio based on the question type (current/next)
+                audioElements[activity][questionType].play();
+            }
+        }
+
+        function expandImage(image) {
+            fullScreenImage = image;
+            image.classList.add('full-screen');
+            image.addEventListener('click', resetApp); // Return to main screen by tapping the image
+        }
+
+        function showRetryScreen() {
+            retryImg.style.display = 'block';
+            retryImg.classList.add('full-screen');
+            retryImg.addEventListener('click', resetApp); // Return to main screen by tapping the retry image
+        }
+
+        function resetApp() {
+            if (fullScreenImage) {
+                fullScreenImage.classList.remove('full-screen');
+                fullScreenImage.removeEventListener('click', resetApp);
+            }
+            retryImg.style.display = 'none';
+            retryImg.classList.remove('full-screen');
+            retryImg.removeEventListener('click', resetApp);
+            resetButton.style.display = 'none';
+            fullScreenImage = null;
+        }
+
+        function saveSession() {
+    const correctId = correctActivity.value; // Dropdown selected activity
+    const goal = goalSelect.value;
+    const independence = independenceSelect.value;
+    const comments = commentsField.value.trim();
+    
+    // Find the last selected image for comparison
+    const lastLogEntry = log[log.length - 1]; 
+    const selectedActivity = lastLogEntry ? lastLogEntry.selectedActivity : correctId;
+    
+    const result = selectedActivity === correctId ? 'Correct' : 'Incorrect'; // Check if the selected image matches
+    
+    const logEntryHtml = `
+        <div class="session-entry">
+            <strong>Time:</strong> ${new Date().toLocaleString()}<br>
+            <strong>Selected Activity:</strong> ${selectedActivity}<br>
+            <strong>Goal:</strong> ${goal}<br>
+            <strong>Independence:</strong> ${independence}<br>
+            <strong>Comments:</strong> ${comments || 'None'}<br>
+            <strong>Result:</strong> ${result}
+        </div>
+    `;
+    logEntries.insertAdjacentHTML('beforeend', logEntryHtml);
+    commentsField.value = ''; // Clear comments after saving
+}
+
+
+        function exportLog() {
+            let logContent = "IEP Goal Tracking Log\n";
+            logContent += "Date and Time, Selected Activity, Correct Activity, Goal, Independence, Comments, Result\n";
+            log.forEach(entry => {
+                logContent += `${entry.time}, ${entry.selectedActivity}, ${entry.correctActivity}, ${entry.goal}, ${entry.independence}, ${entry.comments || 'None'}, ${entry.result}\n`;
+            });
+
+            const now = new Date();
+            const dateString = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+            const blob = new Blob([logContent], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `IEP_Goal_Tracking_Log_${dateString}.txt`;
+            link.click();
+      }
+
+        function clearLog() {
+            logEntries.innerHTML = '';
+            log.length = 0; // Clear the array
+        }
+    </script>
+
+</body>
+</html>
