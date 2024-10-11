@@ -135,6 +135,10 @@
             <option value="goal2">Objective 2: Who is your next teacher?</option>
         </select>
 
+	    <p>
+		    Have the student select from the pictures of teachers below.
+	    </p>
+	    <hr>
         <!-- Teacher pics -->
 
         <div id="image-container">
@@ -167,7 +171,9 @@
 
         <!-- Audio Elements for "Try again" -->
         <audio id="retry" src="retry.mp3"></audio>
-	    
+
+	<hr>
+		    
 	<label for="independence-select">(Teacher) Did the student act independently?</label>
         <select id="independence-select">
             <option value="yes">Yes</option>
@@ -178,7 +184,10 @@
         <textarea id="comments" placeholder="Add any notes or comments..."></textarea>
 
         <button id="save-session" onclick="saveSession()">Save Session</button>    
-        <div id="session-log">
+
+	<hr>
+	        
+	<div id="session-log">
             <h2>Session Log</h2>
             <div id="log-entries"></div>
         </div>
