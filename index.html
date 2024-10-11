@@ -135,16 +135,7 @@
             <option value="goal2">Objective 2: Who is your next teacher?</option>
         </select>
 
-        <label for="independence-select">(Teacher) Did the student act independently?</label>
-        <select id="independence-select">
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-        </select>
-
-        <label for="comments">Teacher Comments:</label>
-        <textarea id="comments" placeholder="Add any notes or comments..."></textarea>
-
-        <button id="save-session" onclick="saveSession()">Save Session</button>
+        <!-- Teacher pics -->
 
         <div id="image-container">
         <img src="salas.png" alt="Salas" id="salas">
@@ -177,6 +168,16 @@
         <!-- Audio Elements for "Try again" -->
         <audio id="retry" src="retry.mp3"></audio>
 	    
+	<label for="independence-select">(Teacher) Did the student act independently?</label>
+        <select id="independence-select">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+
+        <label for="comments">Teacher Comments:</label>
+        <textarea id="comments" placeholder="Add any notes or comments..."></textarea>
+
+        <button id="save-session" onclick="saveSession()">Save Session</button>    
         <div id="session-log">
             <h2>Session Log</h2>
             <div id="log-entries"></div>
