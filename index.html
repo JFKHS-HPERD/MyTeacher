@@ -105,7 +105,7 @@
             background-color: grey;
             color: white;
             text-align: right;
-}
+        }
     </style>
 </head>
 <body>
@@ -113,19 +113,17 @@
     <div class="container">
         <h1>Hello!<br> "What is your teacher's name?" and "Who is your next teacher?"</h1>
         <!-- IEP Objectives -->
-         <p>
-		<b>Objective 1:</b> The student will independently identify his/her upcoming classes during daily routines. He/She will respond to the question "What is your teacher's name?" with 100% accuracy with fading prompts in 4 consecutive trials for each class.
-	<br><br>
-		<b>Objective 1:</b> The student will independently identify his/her upcoming classes during daily routines. He/She will respond to the question "Who is your next teacher?" with 100% accuracy with fading prompts in 4 consecutive trials for each class.
-	</p>
+        <p>
+		    <b>Objective 1:</b> The student will independently identify his/her upcoming classes during daily routines. He/She will respond to the question "What is your teacher's name?" with 100% accuracy with fading prompts in 4 consecutive trials for each class.
+	        <br><br>
+		    <b>Objective 2:</b> The student will independently identify his/her upcoming classes during daily routines. He/She will respond to the question "Who is your next teacher?" with 100% accuracy with fading prompts in 4 consecutive trials for each class.
+	    </p>
 
-
-        
         <!-- Select the Objective -->
-        <label for="objective-select">(Teacher) Select objective for Annual Goal #2:</label>
-        <select id="-select">
-            <option value="1">Objective 1: What is your teacher's name?</option>
-            <option value="objective_2">Objective 2: Who is your next teacher?</option>
+        <label for="objective-select">(Teacher) Select Objective for Annual Goal #2:</label>
+        <select id="objective-select">
+            <option value="objective1">Objective 1: What is your teacher's name?</option>
+            <option value="objective2">Objective 2: Who is your next teacher?</option>
         </select>
 
         <!-- Select the correct teacher -->
@@ -203,15 +201,11 @@
         <button id="clear-log" onclick="clearLog()">Clear Log</button>
     </div>
     
- <!-- Footer -->
     <div class="footer">
-  <p>
-	  Click here to go to
-	  <b><a href="https://jfkhs-hperd.github.io/MyClass/">Annual Goal #1</a></b>
-  </p>
-  <p>
-	  &#169; 2024 Lewie Tenorio
-  </p>
+        <p>Click here to go to <b><a href="https://jfkhs-hperd.github.io/MyClass/">Annual Goal #1</a></b></p>
+        <p>&#169; 2024 Lewie Tenorio</p>
+    </div>
+
     <script>
         const images = document.querySelectorAll('#image-container img');
         const retryImg = document.getElementById('retry');
@@ -287,7 +281,8 @@
             if (activity === 'tryAgain') {
                 audioElements.tryAgain.play();
             } else {
-                audioElements[activity][objectiveSelect.value.includes('objective1') ? 'current' : 'next'].play();
+                const selectedObjective = objectiveSelect.value.includes('objective1') ? 'current' : 'next';
+                audioElements[activity][selectedObjective].play();
             }
         }
 
@@ -295,7 +290,7 @@
             fullScreenImage = image;
             image.classList.add('full-screen');
             image.addEventListener('click', resetApp);
-        }objective
+        }
 
         function showRetryScreen() {
             retryImg.style.display = 'block';
@@ -315,7 +310,7 @@
 
         function saveSession() {
             const correctId = correctActivity.value;
-            const objective =objectiveSelect.value;
+            const objective = objectiveSelect.value;
             const independence = independenceSelect.value;
             const comments = commentsField.value.trim();
 
