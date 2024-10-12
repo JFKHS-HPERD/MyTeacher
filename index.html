@@ -97,6 +97,15 @@
             padding: 10px;
             border-bottom: 1px solid #ccc;
         }
+        .footer {
+            position: static;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: grey;
+            color: white;
+            text-align: right;
+}
     </style>
 </head>
 <body>
@@ -113,10 +122,10 @@
 
         
         <!-- Select the Objective -->
-        <label for="goal-select">(Teacher) Select objective for Annual Goal #2:</label>
-        <select id="goal-select">
-            <option value="goal1">Objective 1: What is your teacher's name?</option>
-            <option value="goal2">Objective 2: Who is your next teacher?</option>
+        <label for="objective-select">(Teacher) Select objective for Annual Goal #2:</label>
+        <select id="-select">
+            <option value="1">Objective 1: What is your teacher's name?</option>
+            <option value="objective_2">Objective 2: Who is your next teacher?</option>
         </select>
 
         <!-- Select the correct teacher -->
@@ -193,12 +202,21 @@
         <button id="export-log" onclick="exportLog()">Export All Sessions</button>
         <button id="clear-log" onclick="clearLog()">Clear Log</button>
     </div>
-
+    
+ <!-- Footer -->
+    <div class="footer">
+  <p>
+	  Click here to go to
+	  <b><a href="https://jfkhs-hperd.github.io/MyClass/">Annual Goal #1</a></b>
+  </p>
+  <p>
+	  &#169; 2024 Lewie Tenorio
+  </p>
     <script>
         const images = document.querySelectorAll('#image-container img');
         const retryImg = document.getElementById('retry');
         const correctActivity = document.getElementById('activity-select');
-        const goalSelect = document.getElementById('goal-select');
+        const objectiveSelect = document.getElementById('objective-select');
         const independenceSelect = document.getElementById('independence-select');
         const commentsField = document.getElementById('comments');
         const logEntries = document.getElementById('log-entries');
@@ -269,7 +287,7 @@
             if (activity === 'tryAgain') {
                 audioElements.tryAgain.play();
             } else {
-                audioElements[activity][goalSelect.value.includes('goal1') ? 'current' : 'next'].play();
+                audioElements[activity][objectiveSelect.value.includes('objective1') ? 'current' : 'next'].play();
             }
         }
 
@@ -277,7 +295,7 @@
             fullScreenImage = image;
             image.classList.add('full-screen');
             image.addEventListener('click', resetApp);
-        }
+        }objective
 
         function showRetryScreen() {
             retryImg.style.display = 'block';
@@ -297,7 +315,7 @@
 
         function saveSession() {
             const correctId = correctActivity.value;
-            const goal = goalSelect.value;
+            const objective =objectiveSelect.value;
             const independence = independenceSelect.value;
             const comments = commentsField.value.trim();
 
@@ -306,7 +324,7 @@
                     <strong>Number of Attempts:</strong> ${attemptCounter}<br>
                     <strong>Time:</strong> ${new Date().toLocaleString()}<br>
                     <strong>Correct Teacher:</strong> ${correctId}<br>
-                    <strong>Goal:</strong> ${goal}<br>
+                    <strong>Objective:</strong> ${objective}<br>
                     <strong>Independence:</strong> ${independence}<br>
                     <strong>Comments:</strong> ${comments || 'None'}
                 </div>
